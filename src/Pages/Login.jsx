@@ -1,0 +1,152 @@
+import {
+  Flex,
+  Box,
+  FormControl,
+  FormLabel,
+  Input,
+  Stack,
+  Button,
+  Heading,
+  Text,
+  useColorModeValue,
+  Alert,
+  AlertIcon,
+} from "@chakra-ui/react";
+import jwt_decode from "jwt-decode";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../Utilis/Auth";
+import BackendURL from "../BackendURL";
+
+export default function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { login } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const redirectPath = location.state?.path || "/";
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    if (email.includes("@") === false) {
+      alert("Email Not Correct");
+      return;
+    };
+
+    /* After 5 wrong attemp you blocked for 24 hours*/
+    try {
+      let res = await fetch(`${BackendURL}/login/get`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "email": email
+        }
+      });
+      res = await res.json();
+      console.log(res);
+      if (res.msg == "Blocked") {
+        alert(`You are Blocked for 24 Hours`);
+        return;
+      };
+    } catch (err) {
+      console.log(err);
+    };
+
+
+    fetch(`${BackendURL}/login`, {
+      method: "POST",
+      crossDomain: true,
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === "NO") {
+          if (data.message === "user not found") {
+            alert("user not Exist Please Signup First");
+            navigate("/register");
+          }
+          if (data.message === "Unauthorized") {
+            alert("Please fill correct password");
+          }
+        }
+        if (data.status === "OK") {
+          alert("Login Successful");
+          console.log(data);
+          login(data);
+          localStorage.setItem("token", data.token);
+          navigate(redirectPath, { replace: true });
+        }
+      })
+      .catch((e) => alert("ERROR", e.message));
+  };
+
+  return (
+    <Flex
+      minH={"100vh"}
+      align={"center"}
+      justify={"center"}
+      bg={useColorModeValue("gray.50", "gray.800")}
+    >
+      <Stack spacing={8} mx={"auto"} maxW={"lg"} py={12} px={6}>
+        <Stack align={"center"}>
+          <Heading fontWeight={350} fontSize={"4xl"}>
+            Existing Customers
+          </Heading>
+        </Stack>
+        <Box
+          rounded={"lg"}
+          bg={useColorModeValue("white", "gray.700")}
+          boxShadow={"lg"}
+          p={8}
+        >
+          <Stack spacing={4}>
+            <FormControl id="email">
+              <FormLabel>Email address</FormLabel>
+              <Input type="email" onChange={(e) => setEmail(e.target.value)} />
+            </FormControl>
+            <FormControl id="password">
+              <FormLabel>Password</FormLabel>
+              <Input
+                type="password"
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </FormControl>
+
+            <Stack spacing={10}>
+              <Stack
+                direction={{ base: "column", sm: "row" }}
+                align={"start"}
+                justify={"space-between"}
+              >
+                <Link to="/register">
+                  <Text color={"blue.400"}> New Customer?</Text>
+                </Link>
+              </Stack>
+
+              <Button
+                onClick={handleLogin}
+                fontWeight="600"
+                bgColor="black"
+                color="white"
+                borderRadius="0"
+                _hover={{
+                  bg: "cyan.500",
+                }}
+              >
+                LOGIN
+              </Button>
+            </Stack>
+          </Stack>
+        </Box>
+      </Stack>
+    </Flex>
+  );
+}

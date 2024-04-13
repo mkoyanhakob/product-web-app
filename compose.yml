@@ -1,0 +1,7 @@
+version '3.8'
+
+services:
+  web_app:
+    image: $APP_IMAGE
+    ports:
+      - 3000:$APP_PORT
