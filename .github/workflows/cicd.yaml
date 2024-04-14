@@ -21,5 +21,3 @@ jobs:
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
-        with:
-          registries: "771282520272.dkr.ecr.eu-central-1.amazonaws.com"
