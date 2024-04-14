@@ -45,4 +45,4 @@ jobs:
     steps:
       - name: 'Pull Docker Image'
         run: |
-          docker pull 771282520272.dkr.ecr.eu-central-1.amazonaws.com/product-web-app:${{ jobs.build-push.outputs.short }}
+          docker pull 771282520272.dkr.ecr.eu-central-1.amazonaws.com/product-web-app:${{ needs.build-push.outputs.short }}
