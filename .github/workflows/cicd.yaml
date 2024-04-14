@@ -6,6 +6,9 @@ on:
 jobs:
   build-push:
     runs-on: ubuntu-latest
+    outputs:
+      short-commit-id: ${{ steps.commit-id.outputs.short }} 
+      long-commit-id: ${{ steps.commit-id.outputs.long }} 
 
     steps:
       - name: 'Checkout'
@@ -35,18 +38,9 @@ jobs:
           tags: 771282520272.dkr.ecr.eu-central-1.amazonaws.com/product-web-app:${{ steps.commit-id.outputs.short }}
 
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: my-runner
 
     steps:
-      - name: 'Pull SSH Key For Compose VM'
-        env:
-          SSH_KEY: ${{ secrets.APP_EC2_SSH_PRIVATE_KEY }}
+      - name: 'Pull Docker Image'
         run: |
-          mkdir ~/.ssh
-          echo $SSH_KEY > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H 18.159.209.221 > ~/.ssh/known_hosts
-    
-      - name: 'SSH Deploy'
-        run: |
-          ssh ubuntu@18.159.209.221 "touch /home/ubuntu/file"
+          docker pull 771282520272.dkr.ecr.eu-central-1.amazonaws.com/product-web-app:${{ jobs.build-push.outputs.short }}
