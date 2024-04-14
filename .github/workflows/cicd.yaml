@@ -38,13 +38,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: 'Debug'
+        run: |
+          pwd
+          ls -la
+        
       - name: 'Pull SSH Key For Compose VM'
         env:
           SSH_KEY: ${{ secrets.APP_EC2_SSH_PRIVATE_KEY }}
         run: |
-          pwd
-          ls
-          ls ~/.ssh
           echo $SSH_KEY > ~/.ssh/id_rsa
           chmod 400 ~/.ssh/id_rsa
           ssh-keyscan -H 18.159.209.221 > ~/.ssh/known_hosts
