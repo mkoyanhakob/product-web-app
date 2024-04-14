@@ -1,15 +1,21 @@
 name: 'CI/CD'
 
 on:
-  workflow_dispatch:
+  push:
 
 jobs:
-  global:
+  integrations:
     runs-on: ubuntu-latest
 
     steps:
       - name: 'Checkout'
         uses: actions/checkout@v4
+
+      - name: 'Get Commit ID'
+        id: commit-id
+        run: |
+          echo short=`git log -n1 --format="%h"` >> "$GITHUB_OUTPUT"
+          echo long=`git log -n1 --format="%H"` >> "$GITHUB_OUTPUT"
 
       - name: 'Configure AWS Credentials'
         uses: aws-actions/configure-aws-credentials@v4
@@ -26,5 +32,4 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: 771282520272.dkr.ecr.eu-central-1.amazonaws.com/product-web-app:latest
-          
+          tags: 771282520272.dkr.ecr.eu-central-1.amazonaws.com/product-web-app:${{ steps.commit-id.outputs.short }}
