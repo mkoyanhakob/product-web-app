@@ -38,6 +38,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: 'Pull SSH Key For Compose VM'
+        run: |
+          echo ${{ secrets.APP_EC2_SSH_PRIVATE_KEY }} > ~/.ssh/id_rsa
+          chmod 400 ~/.ssh/id_rsa
+          ssh-keyscan -H 18.159.209.221 > ~/.ssh/known_hosts
+    
       - name: 'SSH Deploy'
         run: |
-          ssh -i ${{ secrets.APP_EC2_SSH_PRIVATE_KEY }} ubuntu@18.159.209.221 "touch /home/ubuntu/file"
+          ssh ubuntu@18.159.209.221 "touch /home/ubuntu/file"
