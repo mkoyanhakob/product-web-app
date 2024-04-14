@@ -39,6 +39,8 @@ jobs:
 
   deploy:
     runs-on: my-runner
+    needs:
+      - build-push
 
     steps:
       - name: 'Pull Docker Image'
