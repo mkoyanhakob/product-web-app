@@ -4,7 +4,7 @@ on:
   push:
 
 jobs:
-  integrations:
+  build-push:
     runs-on: ubuntu-latest
 
     steps:
@@ -33,3 +33,11 @@ jobs:
         with:
           push: true
           tags: 771282520272.dkr.ecr.eu-central-1.amazonaws.com/product-web-app:${{ steps.commit-id.outputs.short }}
+
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 'SSH Deploy'
+        run: |
+          ssh -i ${{ secrets.APP_EC2_SSH_PRIVATE_KEY }} ubuntu@18.159.209.221 "touch /home/ubuntu/file"
