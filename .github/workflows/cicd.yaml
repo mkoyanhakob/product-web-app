@@ -22,10 +22,9 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: 'Login to ECR'
-        uses: docker/login-action@v3
+      - name: 'Build and push'
+        uses: docker/build-push-action@v5
         with:
-          registry: 771282520272.dkr.ecr.eu-central-1.amazonaws.com
-          username: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          password: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          push: true
+          tags: 771282520272.dkr.ecr.eu-central-1.amazonaws.com/product-web-app:latest
           
