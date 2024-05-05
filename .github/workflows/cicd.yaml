@@ -2,18 +2,10 @@ name: 'Deploy'
 
 on:
   workflow_dispatch: 
-    inputs:
-      environment:
-        options:
-          - 'dev'
-          - 'test'
-        default: 'dev'
-        description: 'Environment'
-        type: choice
 
 jobs:
   deploy:
-    name: "Deploy to ${{ inputs.environment }}"
+    name: "Deploy to dev"
     uses: mkoyanhakob/testing-workflows/.github/workflows/reusable-deploy.yaml@main
     with:
       environment: dev
