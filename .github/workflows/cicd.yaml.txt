@@ -1,0 +1,48 @@
+name: 'CI/CD'
+
+on:
+  push:
+
+jobs:
+  build-push:
+    runs-on: ubuntu-latest
+    outputs:
+      short-commit-id: ${{ steps.commit-id.outputs.short }} 
+      long-commit-id: ${{ steps.commit-id.outputs.long }} 
+
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v4
+
+      - name: 'Get Commit ID'
+        id: commit-id
+        run: |
+          echo short=`git log -n1 --format="%h"` >> "$GITHUB_OUTPUT"
+          echo long=`git log -n1 --format="%H"` >> "$GITHUB_OUTPUT"
+
+      - name: 'Configure AWS Credentials'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+
+      - name: 'Login to Amazon ECR'
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: 'Build and push'
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          tags: 771282520272.dkr.ecr.eu-central-1.amazonaws.com/product-web-app:${{ steps.commit-id.outputs.short }}
+
+  deploy:
+    runs-on: my-runner
+    needs:
+      - build-push
+
+    steps:
+      - name: 'Pull Docker Image'
+        run: |
+          docker pull 771282520272.dkr.ecr.eu-central-1.amazonaws.com/product-web-app:${{ needs.build-push.outputs.short-commit-id }}
