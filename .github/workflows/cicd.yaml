@@ -14,6 +14,6 @@ on:
 jobs:
   deploy:
     name: "Deploy to ${{ inputs.environment }}"
-    uses: mkoyanhakob/testing-workflows/.github/workflows/matrix.yaml@main
+    uses: mkoyanhakob/testing-workflows/.github/workflows/reusable-deploy.yaml@main
     with:
       environment: ${{ inputs.environment }}
