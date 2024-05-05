@@ -16,5 +16,5 @@ jobs:
     name: "Deploy to ${{ inputs.environment }}"
     uses: mkoyanhakob/testing-workflows/.github/workflows/reusable-deploy.yaml@main
     with:
-      environment: ${{ inputs.environment }}
+      environment: dev
     secrets: inherit
