@@ -17,10 +17,11 @@ spec:
     stages {
         stage('Test 1') {
             steps {
-                container('busybox')
-                sh 'hostname'
-                sh 'uname -a'
-                sh 'env'
+                container('busybox') {
+                    sh 'hostname'
+                    sh 'uname -a'
+                    sh 'env'
+                }
             }
         }
     }
