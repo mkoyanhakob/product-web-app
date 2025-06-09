@@ -17,7 +17,9 @@ spec:
     stages {
         stage('Test 1') {
             steps {
-                sh 'uname'
+                sh 'hostname'
+                sh 'uname -a'
+                sh 'env'
             }
         }
     }
