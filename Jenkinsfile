@@ -21,7 +21,7 @@ spec:
                 container('busybox') {
                     sh 'hostname'
                     sh 'uname -a'
-                    sh 'env'
+                    sh 'apt'
                 }
             }
         }
