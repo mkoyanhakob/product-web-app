@@ -25,5 +25,12 @@ spec:
                 }
             }
         }
+        stage('Test 2') {
+            steps {
+                sh 'hostname'
+                sh 'uname -a'
+                sh 'apt'
+            }
+        }
     }
 }
