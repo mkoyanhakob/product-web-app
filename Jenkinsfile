@@ -1,6 +1,7 @@
 pipeline {
     agent {
         kubernetes {
+            defaultContainer 'busybox'
             yaml '''
 kind: Pod
 spec:
