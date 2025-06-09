@@ -1,7 +1,6 @@
 pipeline {
     agent {
         kubernetes {
-            defaultContainer 'kaniko'
             yaml '''
 kind: Pod
 spec:
