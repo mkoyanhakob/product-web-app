@@ -4,6 +4,6 @@ WORKDIR /app
 
 COPY . .
 
-RUN npm i
+RUN npm i 
 
 CMD ["npm", "run", "start"] 
